@@ -1,13 +1,16 @@
 'use client';
 
 import Image from 'next/image';
-import React, { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Formulario from '../Componentes/Ui/Formulario';
 import BotaoEntrar from '../Componentes/Ui/BotãoEntrar';
 import Link from 'next/link';''
-import { useRouter } from 'next/navigation';
+import api from '../Services/api';
 
 export default function Login() {
+  const [user, setUser] = useState([]);
+
+  
 
   return (
     <div

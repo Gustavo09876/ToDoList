@@ -26,20 +26,23 @@ interface FormularioProps {
   Text: string;
   type: string;
   placeholder: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
+
 const Formulario = forwardRef<HTMLInputElement, FormularioProps>(
-  ({ Text, type, placeholder }, ref) => {
+  ({ Text, type, placeholder, value, onChange }, ref) => {
     return (
-      <form>
-        <label>
+      <label>
         {Text && <h3>{Text}</h3>}
         <Input
           type={type}
           placeholder={placeholder}
           ref={ref}
+          value={value}
+          onChange={onChange}
         />
       </label>
-      </form>
     );
   }
 );

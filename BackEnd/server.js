@@ -1,57 +1,59 @@
+import dotenv from 'dotenv';
+dotenv.config();
+import cors from 'cors';
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 
-
 const prisma = new PrismaClient();
-
 const app = express();
 app.use(express.json());
-
-const users = []
-
+app.use(cors());
 app.post('/usuarios', async (req, res) => {
-
-    await prisma.User.create({
-        data: {
-            email: req.body.email,
-            password: req.body.password
-        }
-    })
-
-    res.status(201).json(req.body)
-})
+    await prisma.user.create({
+      data: {
+        email: req.body.email,
+        password: req.body.password,
+      },
+    });
+    
+    res.status(201).json({ message: 'Usuário criado com sucesso' });
+});
 
 app.put('/usuarios/:id', async (req, res) => {
+  try {
+    const updatedUser = await prisma.user.update({
+      where: { id: req.params.id },
+      data: {
+        email: req.body.email,
+        password: req.body.password,
+      },
+    });
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
 
-    await prisma.User.update({
-        where: {
-            id: req.params.id
-        },
-        data: {
-            email: req.body.email,
-            password: req.body.password
-        }
-    })
-
-    res.status(201).json(req.body)
-})
-
-app.get('/usuarios', async (req, res)  => {
-
-    const users = await prisma.User.findMany()
-    res.status(200).json(users)
-})
+app.get('/usuarios', async (req, res) => {
+  try {
+    const users = await prisma.user.findMany();
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 app.delete('/usuarios/:id', async (req, res) => {
-    await prisma.User.delete({
-        where: {
-            id: req.params.id
-        }
-    })
+  try {
+    await prisma.user.delete({
+      where: { id: req.params.id },
+    });
+    res.status(204).send();
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
 
-    res.status(204).send()
-})
-
-
-
-app.listen(3000)
+app.listen(3001, () => {
+  console.log('Servidor rodando na porta 3001');
+});
